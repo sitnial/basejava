@@ -4,33 +4,60 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    Resume[] storage = {new Resume("first"), new Resume("second"), new Resume("third")};
+    Resume[] storage = new Resume[10000];
 
     void clear() {
-        storage = Arrays.stream(storage).filter(resume -> resume != null).toArray(Resume[]::new);
+        int storageSize = size();
+        for (int i = 0; i < storageSize; i++) {
+            storage[i] = null;
+        }
     }
 
     void save(Resume r) {
-        storage = Arrays.copyOf(storage, storage.length + 1);
-        storage[storage.length - 1] = r;
+        int newResumeIndex = size();
+        storage[newResumeIndex] = r;
     }
 
     Resume get(String uuid) {
-        return Arrays.stream(storage).filter(resume -> uuid.equals(resume.toString())).findAny().orElse(null);
+        Resume[] filledStorage = getAll();
+        return Arrays.stream(filledStorage).filter(resume -> uuid.equals(resume.toString())).findAny().orElse(null);
     }
 
     void delete(String uuid) {
-        storage = Arrays.stream(storage).filter(resume -> !uuid.equals(resume.toString())).toArray(Resume[]::new);
+        int storageSize = size();
+        for (int i = 0; i < storageSize; i++) {
+            if (storage[i].toString().equals(uuid)) {
+                for (int j = i; j < storageSize - 1; j++) {
+                    storage[j] = storage[j + 1];
+                }
+                storage[storageSize - 1] = null;
+                break;
+            }
+        }
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        return storage;
+        Resume[] filledStorage = new Resume[size()];
+        for (int i = 0; i < filledStorage.length; i++) {
+            filledStorage[i] = storage[i];
+        }
+
+        return filledStorage;
     }
 
     int size() {
-        return storage.length;
+        int resumeCounter = 0;
+        for (Resume resume : storage) {
+            if (resume == null) {
+                break;
+            }
+
+            resumeCounter++;
+        }
+
+        return resumeCounter;
     }
 }
