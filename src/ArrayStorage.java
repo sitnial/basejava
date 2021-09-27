@@ -21,8 +21,7 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        Resume[] filledStorage = getAll();
-        return Arrays.stream(filledStorage).filter(resume -> uuid.equals(resume.toString())).findAny().orElse(null);
+        return Arrays.stream(storage).limit(storageSize).filter(resume -> uuid.equals(resume.toString())).findAny().orElse(null);
     }
 
     void delete(String uuid) {
@@ -51,15 +50,6 @@ public class ArrayStorage {
     }
 
     int size() {
-        int resumeCounter = 0;
-        for (Resume resume : storage) {
-            if (resume == null) {
-                break;
-            }
-
-            resumeCounter++;
-        }
-
-        return resumeCounter;
+       return storageSize;
     }
 }
